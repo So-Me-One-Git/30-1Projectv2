@@ -5,8 +5,9 @@ public class tester {
 	static myTracker map = new myTracker();
 	public static final Random random = new Random();
 	public static void main(String[] args) throws Exception {
-		makeMap(10);
-        System.out.println(map.printMap());
+		System.out.println("Hello");
+//		makeMap(10);
+//        System.out.println(map.printMap());
     }
 	public static void makeRandomRoom(int biasUp, int biasDown, int biasLeft, int biasRight) {
 		ArrayList<Integer> weightNumber = new ArrayList<>();
