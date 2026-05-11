@@ -37,37 +37,40 @@ public class myTracker {
 	public int getElement(int x,int y) {
 		return map[y][x];
 	}
-	public void goUp() throws Exception {
+	public void setElement(int x, int y, int value) {
+		map[y][x] = value;
+	}
+	public void goUp() throws OverlapException {
 		if(!checkOverlap("up")) {
 			map[yPos-1][xPos]++;
 			yPos--;
 		}else {
-			throw new Exception("Overlap");
+			throw new OverlapException("Overlap");
 		}
 	}
 
-	public void goDown() throws Exception {
+	public void goDown() throws OverlapException {
 		if(!checkOverlap("down")) {
 			map[yPos+1][xPos]++;
 			yPos++;
 		}else {
-			throw new Exception("Overlap");
+			throw new OverlapException("Overlap");
 		}
 	}
-	public void goRight() throws Exception {
+	public void goRight() throws OverlapException {
 		if(!checkOverlap("right")) {
 			map[yPos][xPos+1]++;
 			xPos++;
 		}else {
-			throw new Exception("Overlap");
+			throw new OverlapException("Overlap");
 		}
 	}
-	public void goLeft() throws Exception {
+	public void goLeft() throws OverlapException {
 		if(!checkOverlap("left")) {
 			map[yPos][xPos-1]++;
 			xPos--;
 		}else {
-			throw new Exception("Overlap");
+			throw new OverlapException("Overlap");
 		}
 	}
 	public boolean checkOverlap(String direction){

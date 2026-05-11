@@ -5,66 +5,69 @@ public class tester {
 	static myTracker map = new myTracker();
 	public static final Random random = new Random();
 	public static void main(String[] args) throws Exception {
-		makeMap(10);
+		makeRandomBranch(4,9);
         System.out.println(map.printMap());
     }
 	public static void makeRandomRoom(int biasUp, int biasDown, int biasLeft, int biasRight) {
-		ArrayList<Integer> weightNumber = new ArrayList<>();
+		ArrayList<String> directionBias = new ArrayList<>();
 		for(int i = 0; i < biasUp; i ++) {
-			weightNumber.add(0);
+			directionBias.add("up");
 		}
 		for(int i = 0; i < biasDown; i ++) {
-			weightNumber.add(1);
+			directionBias.add("down");
 		}
 		for(int i = 0; i < biasLeft; i ++) {
-			weightNumber.add(2);
+			directionBias.add("left");
 		}
 		for(int i = 0; i < biasRight; i ++) {
-			weightNumber.add(3);
+			directionBias.add("right");
 		} 
-		int j = 1;
-		for(int i = 0; i < j; i++) {
-			int ranIndex = random.nextInt(weightNumber.size()); 
-			int ranElement = weightNumber.get(ranIndex);
-			if (map.checkStuck()) {
-				findRandomRoom();
+		String ranDirection = directionBias.get(random.nextInt(directionBias.size()));
+		try {
+			switch (ranDirection){
+			case"up":
+				map.goUp();
+				break;
+			case"down":
+				map.goDown();
+				break;
+			case"left":
+				map.goLeft();
+				break;
+			case"right":
+				map.goRight();
+				break;
 			}
-			try {
-				switch(ranElement) {
-				case 0:
-					map.goUp();
-					break;
-				case 1:
-					map.goDown();
-					break;
-				case 2:
-					map.goLeft();
-					break;
-				case 3:
-					map.goRight();
-					break;
-				}
-			}catch(Exception e) {
-				j++;
+			return;
+		}catch(OverlapException e) {
+			if(map.checkStuck()) {
+				findRandomRoom();
+				makeRandomRoom(biasUp, biasDown, biasLeft, biasRight);
+			}else {
+				makeRandomRoom(biasUp, biasDown, biasLeft, biasRight);
 			}
 		}
 	}
+
 	public static void findRandomRoom() {
-		int j = 1;
-		for ( int i = 0; i < j; i++) {
-			int ranX = random.nextInt(map.getMaxX());
-			int ranY = random.nextInt(map.getMaxY());
-			int currentX = map.getxPos();
-			int currentY = map.getyPos();
-			if(map.getElement(ranX, ranY) == 1 ) {
-				map.setxPos(ranX);
-				map.setyPos(ranY);
-				if(map.checkStuck()) {
-					map.setxPos(currentX);
-					map.setyPos(currentY);
-					j++;
-				}
+		int ranX = random.nextInt(map.getMaxX());
+		int ranY = random.nextInt(map.getMaxY());
+		int currentX = map.getxPos();
+		int currentY = map.getyPos();
+		if(map.getElement(ranX, ranY) == 1) {
+			map.setxPos(ranX);
+			map.setyPos(ranY);
+			if(map.checkStuck()) {
+				map.setxPos(currentX);
+				map.setyPos(currentY);
+				findRandomRoom();
+				return;
+			}else {
+				map.setElement(ranX, ranY, 4);
 			}
+		}else {
+			findRandomRoom();
+			return;
 		}
 	}
 	public static void makeMap(int size) {
@@ -85,38 +88,9 @@ public class tester {
 				}
 				break;
 			case 1:
-				makeRandomBranch();
+				makeRandomBranch(4,9);
 			}
 
-		}
-	}
-	public static void makeRoomsRecursively(int rooms) {
-		if (rooms == 0) {
-			return;
-		}
-		int number = random.nextInt(4); 
-		try {
-			switch(number) {
-			case 0:
-				map.goUp();
-				makeRoomsRecursively(rooms-1);
-				break;
-			case 1:
-				map.goDown();
-				makeRoomsRecursively(rooms-1);
-				break;
-			case 2:
-				map.goLeft();
-				makeRoomsRecursively(rooms-1);
-				break;
-			case 3:
-				map.goRight();
-				makeRoomsRecursively(rooms-1);
-				break;
-			}
-			
-		}catch(Exception e){
-			makeRoomsRecursively(rooms);
 		}
 	}
 	public static void makeBranch(String direction, int rooms){
@@ -146,9 +120,9 @@ public class tester {
 		map.setxPos(xPos);
 		map.setyPos(yPos);
 	}
-	public static void makeRandomBranch() {
+	public static void makeRandomBranch(int min, int max) {
 		int ranDirection = random.nextInt(4);
-		int ranNumber = random.nextInt(4);
+		int ranNumber = random.nextInt(min, max + 1);
 		switch(ranDirection) {
 		case 0:
 			makeBranch("up", ranNumber);
