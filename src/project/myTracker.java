@@ -28,6 +28,15 @@ public class myTracker {
 	public int getyPos() {
 		return this.yPos;
 	}
+	public int getMaxX(){
+		return map[0].length;
+	}
+	public int getMaxY() {
+		return map.length;
+	}
+	public int getElement(int x,int y) {
+		return map[y][x];
+	}
 	public void goUp() throws Exception {
 		if(!checkOverlap("up")) {
 			map[yPos-1][xPos]++;

@@ -21,45 +21,63 @@ public class tester {
 		}
 		for(int i = 0; i < biasRight; i ++) {
 			weightNumber.add(3);
-		}
-		int ranIndex = random.nextInt(weightNumber.size()); 
-		int ranElement = weightNumber.get(ranIndex);
-
-		
-		try {
+		} 
+		int j = 1;
+		for(int i = 0; i < j; i++) {
+			int ranIndex = random.nextInt(weightNumber.size()); 
+			int ranElement = weightNumber.get(ranIndex);
 			if (map.checkStuck()) {
-				map.setxPos(5);
-				map.setyPos(5);
-				makeRandomRoom(biasUp,biasDown,biasLeft,biasRight);
+				findRandomRoom();
 			}
-			switch(ranElement) {
-			case 0:
-				map.goUp();
-				break;
-			case 1:
-				map.goDown();
-				break;
-			case 2:
-				map.goLeft();
-				break;
-			case 3:
-				map.goRight();
-				break;
-				
+			try {
+				switch(ranElement) {
+				case 0:
+					map.goUp();
+					break;
+				case 1:
+					map.goDown();
+					break;
+				case 2:
+					map.goLeft();
+					break;
+				case 3:
+					map.goRight();
+					break;
+				}
+			}catch(Exception e) {
+				j++;
 			}
-		}catch(Exception e) {
-			makeRandomRoom(biasUp,biasDown,biasLeft,biasRight);
+		}
+	}
+	public static void findRandomRoom() {
+		int j = 1;
+		for ( int i = 0; i < j; i++) {
+			int ranX = random.nextInt(map.getMaxX());
+			int ranY = random.nextInt(map.getMaxY());
+			int currentX = map.getxPos();
+			int currentY = map.getyPos();
+			if(map.getElement(ranX, ranY) == 1 ) {
+				map.setxPos(ranX);
+				map.setyPos(ranY);
+				if(map.checkStuck()) {
+					map.setxPos(currentX);
+					map.setyPos(currentY);
+					j++;
+				}
+			}
 		}
 	}
 	public static void makeMap(int size) {
 		for(int i = 0; i < size; i ++) {
-			int totalValue = 40;
-			int number = random.nextInt(15); 
+			int total = 20;
+			int upBias = random.nextInt(total + 1);
+			total -= upBias;
+			int downBias = random.nextInt(total + 1);
+			total -= downBias;
+			int leftBias = random.nextInt(total + 1);
+			total -= leftBias;
+			int rightBias = total;
 			int switchCases = random.nextInt(2); 
-			int upBias = random.nextInt(); 
-			int downBias = random.nextInt(10); 
-			int leftBias = random.nextInt(10); 
-			int rightBias = random.nextInt(10); 
 			switch(switchCases) {
 			case 0:
 				for(int j = 0; j < 4; j++) {
@@ -94,6 +112,7 @@ public class tester {
 			case 3:
 				map.goRight();
 				makeRoomsRecursively(rooms-1);
+				break;
 			}
 			
 		}catch(Exception e){
@@ -120,8 +139,10 @@ public class tester {
 		case "right":
 			rightWeight = 7;
 			break;
-	}
+	} for (int i = 0; i < rooms; i++) {
 		makeRandomRoom(upWeight, downWeight, leftWeight, rightWeight);
+	}
+		
 		map.setxPos(xPos);
 		map.setyPos(yPos);
 	}
@@ -137,8 +158,10 @@ public class tester {
 			break;
 		case 2:
 			makeBranch("left", ranNumber);
+			break;
 		case 3:
 			makeBranch("right", ranNumber);
+			break;
 		
 		}
 	}
