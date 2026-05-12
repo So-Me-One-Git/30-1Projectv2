@@ -5,8 +5,12 @@ public class tester {
 	static myTracker map = new myTracker();
 	public static final Random random = new Random();
 	public static void main(String[] args) throws Exception {
-		makeRandomBranch(4,9);
-        System.out.println(map.printMap());
+		map.dynamicMap(21, 21);
+		map.setStartPos(10, 10);
+		for(int i = 0; i < 200; i++) {
+			makeRandomRoom(1,1,1,1);
+		}
+        System.out.println(map.printMap(map.dynamicMap));
     }
 	public static void makeRandomRoom(int biasUp, int biasDown, int biasLeft, int biasRight) {
 		ArrayList<String> directionBias = new ArrayList<>();
@@ -45,6 +49,7 @@ public class tester {
 				makeRandomRoom(biasUp, biasDown, biasLeft, biasRight);
 			}else {
 				makeRandomRoom(biasUp, biasDown, biasLeft, biasRight);
+				return;
 			}
 		}
 	}
@@ -70,27 +75,30 @@ public class tester {
 			return;
 		}
 	}
-	public static void makeMap(int size) {
-		for(int i = 0; i < size; i ++) {
-			int total = 20;
-			int upBias = random.nextInt(total + 1);
-			total -= upBias;
-			int downBias = random.nextInt(total + 1);
-			total -= downBias;
-			int leftBias = random.nextInt(total + 1);
-			total -= leftBias;
-			int rightBias = total;
-			int switchCases = random.nextInt(2); 
-			switch(switchCases) {
-			case 0:
-				for(int j = 0; j < 4; j++) {
+	public static void makeMap( int branchMin, int branchMax, int numRooms, int roomBias, int branchBias,int totalSize) {
+		ArrayList<String> branchesVsRooms = new ArrayList<>();
+		for(int i = 0; i < branchBias; i++){
+			branchesVsRooms.add("branches");
+		}
+		for(int i = 0; i < roomBias; i++){
+			branchesVsRooms.add("rooms");
+		}
+		String ranChoice = branchesVsRooms.get(random.nextInt(branchesVsRooms.size()));
+		for(int i = 0; i < totalSize; i++) {
+			switch(ranChoice) {
+			case "branches":
+				makeRandomBranch(5,10);
+				break;
+			case"rooms":
+				int upBias = random.nextInt(10);
+				int downBias = random.nextInt(10);
+				int leftBias = random.nextInt(10);
+				int rightBias = random.nextInt(10);
+				for ( int j = 0; j < numRooms; j++) {
 					makeRandomRoom(upBias, downBias, leftBias, rightBias);
 				}
-				break;
-			case 1:
-				makeRandomBranch(4,9);
+				
 			}
-
 		}
 	}
 	public static void makeBranch(String direction, int rooms){
@@ -102,22 +110,22 @@ public class tester {
 		int downWeight = 1;
 		switch(direction) {
 		case "up":
-			upWeight = 7;
+			upWeight = 10;
 			break;
 		case "down":
-			downWeight = 7;
+			downWeight = 10;
 			break;
 		case "left":
-			leftWeight = 7;
+			leftWeight = 10;
 			break;
 		case "right":
-			rightWeight = 7;
+			rightWeight = 10;
 			break;
 	} for (int i = 0; i < rooms; i++) {
 		makeRandomRoom(upWeight, downWeight, leftWeight, rightWeight);
 	}
 		
-		map.setxPos(xPos);
+		map.setxPos(xPos); 
 		map.setyPos(yPos);
 	}
 	public static void makeRandomBranch(int min, int max) {

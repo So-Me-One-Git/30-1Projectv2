@@ -1,21 +1,19 @@
 package project;
 
 public class myTracker {
-	private int xPos = 5;
-	private int yPos = 5;
-	int[][] map = {
-		{0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0},	
-		{0,0,0,0,0,0,0,0,0,0,0},	
-		{0,0,0,0,0,0,0,0,0,0,0},	
-		{0,0,0,0,0,0,0,0,0,0,0},	
-		{0,0,0,0,0,3,0,0,0,0,0},	
-		{0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0},	
-		{0,0,0,0,0,0,0,0,0,0,0},	
-		{0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0},
-	};
+	private int xPos = 0;
+	private int yPos = 0;
+	int[][] dynamicMap;
+	public void setStartPos(int x, int y) {
+		dynamicMap[yPos][xPos] = 0;
+		this.xPos = x;
+		this.yPos = y;
+		dynamicMap[yPos][xPos] = 3;
+	}
+	public void dynamicMap(int x, int y) {
+		this.dynamicMap = new int[y][x];
+		dynamicMap[yPos][xPos] = 3;
+	}
 	public void setxPos(int xPos) {
 		this.xPos=xPos;
 	}
@@ -29,20 +27,20 @@ public class myTracker {
 		return this.yPos;
 	}
 	public int getMaxX(){
-		return map[0].length;
+		return dynamicMap[0].length;
 	}
 	public int getMaxY() {
-		return map.length;
+		return dynamicMap.length;
 	}
 	public int getElement(int x,int y) {
-		return map[y][x];
+		return dynamicMap[y][x];
 	}
 	public void setElement(int x, int y, int value) {
-		map[y][x] = value;
+		dynamicMap[y][x] = value;
 	}
 	public void goUp() throws OverlapException {
 		if(!checkOverlap("up")) {
-			map[yPos-1][xPos]++;
+			dynamicMap[yPos-1][xPos]++;
 			yPos--;
 		}else {
 			throw new OverlapException("Overlap");
@@ -51,7 +49,7 @@ public class myTracker {
 
 	public void goDown() throws OverlapException {
 		if(!checkOverlap("down")) {
-			map[yPos+1][xPos]++;
+			dynamicMap[yPos+1][xPos]++;
 			yPos++;
 		}else {
 			throw new OverlapException("Overlap");
@@ -59,7 +57,7 @@ public class myTracker {
 	}
 	public void goRight() throws OverlapException {
 		if(!checkOverlap("right")) {
-			map[yPos][xPos+1]++;
+			dynamicMap[yPos][xPos+1]++;
 			xPos++;
 		}else {
 			throw new OverlapException("Overlap");
@@ -67,7 +65,7 @@ public class myTracker {
 	}
 	public void goLeft() throws OverlapException {
 		if(!checkOverlap("left")) {
-			map[yPos][xPos-1]++;
+			dynamicMap[yPos][xPos-1]++;
 			xPos--;
 		}else {
 			throw new OverlapException("Overlap");
@@ -90,7 +88,7 @@ public class myTracker {
 				futureX++;
 				break;
 		}
-		if(checkInBounds(futureY, futureX) && map[futureY][futureX] == 0) {
+		if(checkInBounds(futureY, futureX) && dynamicMap[futureY][futureX] == 0) {
 			return false;// FALSE MEANS THAT THERE IS NO OVERLAP
 		}else{
 			return true;
@@ -105,13 +103,13 @@ public class myTracker {
 			
 	}
 	public boolean checkInBounds(int y, int x) {
-		if(y >= 0 && y < map.length && x >= 0 && x < map[y].length) {
+		if(y >= 0 && y < dynamicMap.length && x >= 0 && x < dynamicMap[y].length) {
 			return true;
 		}else {
 			return false;
 		}
 	}
-	public String printMap() {
+	public String printMap(int[][] map) {
 		StringBuilder mapString = new StringBuilder();
 		for(int i = 0; i < map.length; i++) {
 			for(int j = 0; j < map[i].length; j++) {
