@@ -8,6 +8,8 @@ public class tester {
 		map.dynamicMap(21, 21);
 		map.setStartPos(10, 10);
 		map.makeFracture(15);
+		System.out.println("test");
 		System.out.println(map.printMap(map.dynamicMap));
+		//test;
 	}
 }
