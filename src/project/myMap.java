@@ -7,6 +7,7 @@ public class myMap {
 	private int yPos = 0;
 	private static final Random random = new Random();
 	int[][] dynamicMap;
+	boolean[][] visited;
 	public void setStartPos(int x, int y) {
 		dynamicMap[yPos][xPos] = 0;
 		this.xPos = x;
@@ -188,14 +189,50 @@ public class myMap {
 	public void makeMap() {
 	}
 	public void SecondLayer() {
-		for(int i = 0; i < getMaxY(); i++) {
-			for(int j = 0; j < getMaxX(); j++) {
-				if(getElement(j,i) == 1) {
-					
-				}
-			}
+        for(int y = 0; y < getMaxY(); y++) {
+            for(int x = 0; x < getMaxX(); x++) {
+                int adjacentRooms = 0;
+                if (getElement(x,y) == 1) {
+                    adjacentRooms++;
+                        if (x < getMaxX() - 1 && getElement(x + 1, y) == 1){
+                            adjacentRooms++;
+                        }
+                        if (x > 0 && (getElement(x - 1,y) == 1)){
+                            adjacentRooms++;
+                        }
+                        if ((y < getMaxX() - 1) && getElement(x, y + 1) == 1){
+                            adjacentRooms++;
+                        }
+                        if ((y > 0) && (getElement(x,y - 1) == 1)){
+                            adjacentRooms++;
+                        }
+                        if (adjacentRooms == 3 && random.nextInt(4) == 0){
+                            setElement(x,y,0);
+                        }
+                        if (adjacentRooms == 4 && random.nextInt(2) == 0){
+                        	setElement(x,y,0);
+                        }
+
+                    }
+                }
+            }
+        }
+	public boolean conjoined(int x, int y) {
+		if (getElement(x-1, y) == 3 || getElement(x+1,y) == 3 || getElement(x,y-1) == 3 || getElement(x,y+1) == 3) {
+			return true;
 		}
+		if(conjoined(x-1,y) || conjoined(x+1,y) || conjoined(x,y-1) || conjoined(x,y+1)) {
+			return true;
+		}
+		if (visited[y][x]) {
+	        return false;
+	    }
+
+	    // Mark as visited
+	    visited[y][x] = true;
+		return false;
 	}
+	
 	public void makeRandomBranch(){
 		int leftWeight = 1;
 		int rightWeight = 1;
