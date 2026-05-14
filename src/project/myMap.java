@@ -115,9 +115,9 @@ public class myMap {
 	}
 	public String printMap(int[][] map) {
 		StringBuilder mapString = new StringBuilder();
-		for(int i = 0; i < getMaxY(); i++) {
-			for(int j = 0; j < getMaxX(); j++) {
-				mapString.append(map[i][j]).append(" ");
+		for(int y = 0; y < getMaxY(); y++) {
+			for(int x = 0; x < getMaxX(); x++) {
+				mapString.append(map[y][x]).append(" ");
 			}
 			mapString.append("\n");
 		} 
@@ -179,7 +179,7 @@ public class myMap {
 				findRandomRoom();
 				return;
 			}else {
-				setElement(ranX, ranY, 4);
+				setElement(ranX, ranY, 1);
 			}
 		}else {
 			findRandomRoom();
@@ -189,50 +189,101 @@ public class myMap {
 	public void makeMap() {
 	}
 	public void SecondLayer() {
-        for(int y = 0; y < getMaxY(); y++) {
-            for(int x = 0; x < getMaxX(); x++) {
-                int adjacentRooms = 0;
-                if (getElement(x,y) == 1) {
-                    adjacentRooms++;
-                        if (x < getMaxX() - 1 && getElement(x + 1, y) == 1){
-                            adjacentRooms++;
-                        }
-                        if (x > 0 && (getElement(x - 1,y) == 1)){
-                            adjacentRooms++;
-                        }
-                        if ((y < getMaxX() - 1) && getElement(x, y + 1) == 1){
-                            adjacentRooms++;
-                        }
-                        if ((y > 0) && (getElement(x,y - 1) == 1)){
-                            adjacentRooms++;
-                        }
-                        if (adjacentRooms == 3 && random.nextInt(4) == 0){
-                            setElement(x,y,0);
-                        }
-                        if (adjacentRooms == 4 && random.nextInt(2) == 0){
-                        	setElement(x,y,0);
-                        }
+		for(int y = 0; y < getMaxY(); y++) {
+			for(int x = 0; x < getMaxX(); x++) {
+				int adjacentRooms = 0;
+				if (getElement(x,y) == 1) {
+					adjacentRooms++;
+					if (x < getMaxX() - 1 && getElement(x + 1, y) == 1){
+						adjacentRooms++;
+					}
+					if (x > 0 && (getElement(x - 1,y) == 1)){
+						adjacentRooms++;
+					}
+					if ((y < getMaxX() - 1) && getElement(x, y + 1) == 1){
+						adjacentRooms++;
+					}
+					if ((y > 0) && (getElement(x,y - 1) == 1)){
+						adjacentRooms++;
+					}
+					if (adjacentRooms == 3 && random.nextInt(4) == 0){
+						setElement(x,y,0);
+					}
+					if (adjacentRooms == 4 && random.nextInt(2) == 0){
+						setElement(x,y,0);
+					}
 
-                    }
-                }
-            }
-        }
-	public boolean conjoined(int x, int y) {
-		if (getElement(x-1, y) == 3 || getElement(x+1,y) == 3 || getElement(x,y-1) == 3 || getElement(x,y+1) == 3) {
-			return true;
+				}
+			}
 		}
-		if(conjoined(x-1,y) || conjoined(x+1,y) || conjoined(x,y-1) || conjoined(x,y+1)) {
-			return true;
-		}
-		if (visited[y][x]) {
-	        return false;
-	    }
-
-	    // Mark as visited
-	    visited[y][x] = true;
-		return false;
 	}
-	
+	public void conjoin(int x, int y) {
+		if (x < getMaxX() - 1 && getElement(x + 1, y) == 1) {
+			setElement(x + 1, y, 3);
+			conjoin(x + 1, y);
+		}
+
+		if (x > 0 && getElement(x - 1, y) == 1) {
+			setElement(x - 1, y, 3);
+			conjoin(x - 1, y);
+		}
+
+		if (y < getMaxY() - 1 && getElement(x, y + 1) == 1) {
+			setElement(x, y + 1, 3);
+			conjoin(x, y + 1);
+		}
+
+		if (y > 0 && getElement(x, y - 1) == 1) {
+			setElement(x, y - 1, 3);
+			conjoin(x, y - 1);
+		}
+	}
+	public void reconnect() {		
+		boolean found;
+
+		do {
+			found = false;
+
+			for (int y = 0; y < getMaxY(); y++) {
+				for (int x = 0; x < getMaxX(); x++) {
+					if (getElement(x, y) == 1) {
+						found = true;
+						setElement(x,y+1, 1);
+						conjoin(xPos,yPos);
+						if(getElement(x,y) == 1) {
+							setElement(x,y+1, 0);
+						}else {
+							break;
+						}
+						setElement(x,y-1,1);
+						conjoin(xPos,yPos);
+						if(getElement(x,y) == 1) {
+							setElement(x,y-1, 0);
+						}else {
+							break;
+						}
+						setElement(x-1,y,1);
+						conjoin(xPos,yPos);
+						if(getElement(x,y) == 1) {
+							setElement(x-1,y, 0);
+						}else {
+							break;
+						}
+						setElement(x+1,y,1);
+						conjoin(xPos,yPos);
+						if(getElement(x,y) == 1) {
+							setElement(x+1,y, 0);
+						}else {
+							break;
+						}
+					}
+				}
+			}
+
+		} while (found);
+
+	}
+
 	public void makeRandomBranch(){
 		int leftWeight = 1;
 		int rightWeight = 1;
@@ -287,6 +338,5 @@ public class myMap {
 			findRandomRoom();
 			makeRandomBranch();
 		}
-		setElement(10, 10, 3);
 	}
 }
