@@ -5,18 +5,20 @@ import java.util.ArrayList;
 public class myMap {
 	private int xPos = 0;
 	private int yPos = 0;
+	private int startxPos;
+	private int startyPos;
 	private static final Random random = new Random();
 	int[][] dynamicMap;
-	boolean[][] visited;
+
 	public void setStartPos(int x, int y) {
-		dynamicMap[yPos][xPos] = 0;
+		this.startxPos = x;
+		this.startyPos = y;
 		this.xPos = x;
 		this.yPos = y;
-		dynamicMap[yPos][xPos] = 3;
+		dynamicMap[startyPos][startxPos] = 1;
 	}
 	public void dynamicMap(int x, int y) {
 		this.dynamicMap = new int[y][x];
-		dynamicMap[yPos][xPos] = 3;
 	}
 	public void setxPos(int xPos) {
 		this.xPos=xPos;
@@ -123,7 +125,7 @@ public class myMap {
 		} 
 		return mapString.toString();
 	}
-	public void makeRandomRoom(int biasUp, int biasDown, int biasLeft, int biasRight) {
+	public String makeRandomRoom(int biasUp, int biasDown, int biasLeft, int biasRight) {
 		ArrayList<String> directionBias = new ArrayList<>();
 		for(int i = 0; i < biasUp; i ++) {
 			directionBias.add("up");
@@ -153,42 +155,53 @@ public class myMap {
 				goRight();
 				break;
 			}
-			return;
+			return ranDirection;
 		}catch(OverlapException e) {
 			if(checkStuck()) {
 				findRandomRoom();
-				makeRandomRoom(biasUp, biasDown, biasLeft, biasRight);
-			}else {
-				makeRandomRoom(biasUp, biasDown, biasLeft, biasRight);
-				return;
 			}
+			return makeRandomRoom(biasUp, biasDown, biasLeft, biasRight);
 		}
+	}
+	public boolean oneExist() {
+	    for (int y = 0; y < getMaxY(); y++) {
+	        for (int x = 0; x < getMaxX(); x++) {
+	            if (getElement(x, y) == 1) return true;
+	        }
+	    }
+	    return false;
 	}
 
-	public void findRandomRoom() {
-		int ranX = random.nextInt(getMaxX());
-		int ranY = random.nextInt(getMaxY());
-		int currentX = getxPos();
-		int currentY = getyPos();
-		if(getElement(ranX, ranY) == 1 || getElement(ranX, ranY) == 3) {
-			setxPos(ranX);
-			setyPos(ranY);
-			if(checkStuck()) {
-				setxPos(currentX);
-				setyPos(currentY);
-				findRandomRoom();
-				return;
-			}else {
-				setElement(ranX, ranY, 1);
+	public boolean findRandomRoom() {
+		if(oneExist()) {
+			int ranX = random.nextInt(getMaxX());
+			int ranY = random.nextInt(getMaxY());
+			int currentX = getxPos();
+			int currentY = getyPos();
+			if (getElement(ranX, ranY) == 1) {
+				setxPos(ranX);
+				setyPos(ranY);
+				if (checkStuck()) {
+					setxPos(currentX);
+					setyPos(currentY);
+					return findRandomRoom();
+				} else {
+					return true;
+				}
+			} else {
+				return findRandomRoom();
 			}
-		}else {
-			findRandomRoom();
-			return;
 		}
+		return false;
 	}
 	public void makeMap() {
+		dynamicMap(101, 101);
+		setStartPos(50, 50);
+		makeFracture(200);
+		makeNoise();
+		connectAllClusters();
 	}
-	public void SecondLayer() {
+	public void makeNoise() {
 		for(int y = 0; y < getMaxY(); y++) {
 			for(int x = 0; x < getMaxX(); x++) {
 				int adjacentRooms = 0;
@@ -206,10 +219,10 @@ public class myMap {
 					if ((y > 0) && (getElement(x,y - 1) == 1)){
 						adjacentRooms++;
 					}
-					if (adjacentRooms == 3 && random.nextInt(4) == 0){
+					if (adjacentRooms == 3 && random.nextInt(2) == 0){
 						setElement(x,y,0);
 					}
-					if (adjacentRooms == 4 && random.nextInt(2) == 0){
+					if (adjacentRooms == 4 && random.nextInt(6) != 0){
 						setElement(x,y,0);
 					}
 
@@ -217,73 +230,6 @@ public class myMap {
 			}
 		}
 	}
-	public void conjoin(int x, int y) {
-		if (x < getMaxX() - 1 && getElement(x + 1, y) == 1) {
-			setElement(x + 1, y, 3);
-			conjoin(x + 1, y);
-		}
-
-		if (x > 0 && getElement(x - 1, y) == 1) {
-			setElement(x - 1, y, 3);
-			conjoin(x - 1, y);
-		}
-
-		if (y < getMaxY() - 1 && getElement(x, y + 1) == 1) {
-			setElement(x, y + 1, 3);
-			conjoin(x, y + 1);
-		}
-
-		if (y > 0 && getElement(x, y - 1) == 1) {
-			setElement(x, y - 1, 3);
-			conjoin(x, y - 1);
-		}
-	}
-	public void reconnect() {		
-		boolean found;
-
-		do {
-			found = false;
-
-			for (int y = 0; y < getMaxY(); y++) {
-				for (int x = 0; x < getMaxX(); x++) {
-					if (getElement(x, y) == 1) {
-						found = true;
-						setElement(x,y+1, 1);
-						conjoin(xPos,yPos);
-						if(getElement(x,y) == 1) {
-							setElement(x,y+1, 0);
-						}else {
-							break;
-						}
-						setElement(x,y-1,1);
-						conjoin(xPos,yPos);
-						if(getElement(x,y) == 1) {
-							setElement(x,y-1, 0);
-						}else {
-							break;
-						}
-						setElement(x-1,y,1);
-						conjoin(xPos,yPos);
-						if(getElement(x,y) == 1) {
-							setElement(x-1,y, 0);
-						}else {
-							break;
-						}
-						setElement(x+1,y,1);
-						conjoin(xPos,yPos);
-						if(getElement(x,y) == 1) {
-							setElement(x+1,y, 0);
-						}else {
-							break;
-						}
-					}
-				}
-			}
-
-		} while (found);
-
-	}
-
 	public void makeRandomBranch(){
 		int leftWeight = 1;
 		int rightWeight = 1;
@@ -339,4 +285,105 @@ public class myMap {
 			makeRandomBranch();
 		}
 	}
+	public void floodFill(int x, int y, boolean[][] visited, ArrayList<Point> cluster) {
+
+	    if(x < 0 || x >= getMaxX() || y < 0 || y >= getMaxY()) {
+	        return;
+	    }
+
+	    if(visited[y][x] || getElement(x, y) != 1) {
+	        return;
+	    }
+
+	    visited[y][x] = true;
+	    cluster.add(new Point(x, y));
+
+	    floodFill(x + 1, y, visited, cluster);
+	    floodFill(x - 1, y, visited, cluster);
+	    floodFill(x, y + 1, visited, cluster);
+	    floodFill(x, y - 1, visited, cluster);
+	}
+	public ArrayList<ArrayList<Point>> getClusters() {
+
+	    boolean[][] visited = new boolean[getMaxY()][getMaxX()];
+
+	    ArrayList<ArrayList<Point>> clusters = new ArrayList<>();
+
+	    for(int y = 0; y < getMaxY(); y++) {
+	        for(int x = 0; x < getMaxX(); x++) {
+
+	            if(getElement(x, y) == 1 && !visited[y][x]) {
+
+	                ArrayList<Point> cluster = new ArrayList<>();
+
+	                floodFill(x, y, visited, cluster);
+
+	                clusters.add(cluster);
+	            }
+	        }
+	    }
+
+	    return clusters;
+	}
+	public void connectAllClusters() {
+
+	    while(true) {
+
+	        ArrayList<ArrayList<Point>> clusters = getClusters();
+
+	        if(clusters.size() <= 1) {
+	            return;
+	        }
+
+	        int bestDistance = Integer.MAX_VALUE;
+
+	        Point bestA = null;
+	        Point bestB = null;
+
+	        for(int i = 0; i < clusters.size(); i++) {
+
+	            for(int j = i + 1; j < clusters.size(); j++) {
+
+	                for(Point a : clusters.get(i)) {
+
+	                    for(Point b : clusters.get(j)) {
+
+	                        int dist =
+	                            Math.abs(a.x - b.x) +
+	                            Math.abs(a.y - b.y);
+
+	                        if(dist < bestDistance) {
+
+	                            bestDistance = dist;
+
+	                            bestA = a;
+	                            bestB = b;
+	                        }
+	                    }
+	                }
+	            }
+	        }
+
+	        carvePath(bestA, bestB);
+	    }
+	}
+	public void carvePath(Point a, Point b) {
+
+	    int x = a.x;
+	    int y = a.y;
+
+	    while(x != b.x) {
+	        setElement(x, y, 1);
+	        x += Integer.signum(b.x - x);
+	    }
+
+	    while(y != b.y) {
+	        setElement(x, y, 1);
+	        y += Integer.signum(b.y - y);
+	    }
+
+	    setElement(x, y, 1);
+	}
+	
+
 }
