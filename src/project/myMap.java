@@ -222,7 +222,7 @@ public class myMap {
 					if (adjacentRooms == 3 && random.nextInt(2) == 0){
 						setElement(x,y,0);
 					}
-					if (adjacentRooms == 4 && random.nextInt(6) != 0){
+					if (adjacentRooms == 4 && random.nextInt(10) != 0){
 						setElement(x,y,0);
 					}
 
