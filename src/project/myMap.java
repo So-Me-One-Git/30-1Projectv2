@@ -194,12 +194,37 @@ public class myMap {
 		}
 		return false;
 	}
-	public void makeMap() {
-		dynamicMap(101, 101);
-		setStartPos(50, 50);
-		makeFracture(200);
-		makeNoise();
-		connectAllClusters();
+	public void makeMap(int x, int y) {
+		makeMap(x,y,x+y);
+	}
+
+	public void makeMap(int x, int y, int size) {
+		try {
+			dynamicMap(x, y);
+			setStartPos(x/2, y/2);
+			makeFracture(size);
+			makeNoise();
+			connectAllClusters();
+			if(percentFilled() > 0.3) {
+				return;
+			}else {
+				makeMap(x,y, size + (x+y)/10);
+			}
+		}catch(Exception e) {
+			makeMap(x,y, size + (x+y)/10);
+		}
+	}
+	
+	public float percentFilled() {
+		int ones = 0;
+		for(int y = 0; y < getMaxY(); y++) {
+			for(int x = 0; x < getMaxX(); x++) {
+				if(getElement(x,y) == 1) {
+					ones++;
+				}
+			}
+		}
+		return (float) ones/(getMaxX() * getMaxY());
 	}
 	public void makeNoise() {
 		for(int y = 0; y < getMaxY(); y++) {
@@ -219,10 +244,10 @@ public class myMap {
 					if ((y > 0) && (getElement(x,y - 1) == 1)){
 						adjacentRooms++;
 					}
-					if (adjacentRooms == 3 && random.nextInt(2) == 0){
+					if (adjacentRooms == 3 && random.nextInt(random.nextInt(2,5)) != 0){
 						setElement(x,y,0);
 					}
-					if (adjacentRooms == 4 && random.nextInt(10) != 0){
+					if (adjacentRooms == 4 && random.nextInt(random.nextInt(5,10)) != 0){
 						setElement(x,y,0);
 					}
 

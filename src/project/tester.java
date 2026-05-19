@@ -3,9 +3,9 @@ import java.util.ArrayList;
 import java.util.Random;
 public class tester {
 	static myMap map = new myMap();
-	public static final Random random = new Random();
 	public static void main(String[] args) throws Exception {
-		map.makeMap();
+		map.makeMap(50,50);
 		System.out.println(map.printMap(map.dynamicMap));
+		System.out.println(map.percentFilled());
 	}
 }
