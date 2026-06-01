@@ -33,6 +33,12 @@ public class myMap {
 	public int getyPos() {
 		return this.yPos;
 	}
+	public int getStartxPos() {
+		return this.startxPos;
+	}
+	public int getStartyPos() {
+		return this.startyPos;
+	}
 	public int getMaxX(){
 		return dynamicMap[0].length;
 	}
@@ -44,6 +50,9 @@ public class myMap {
 	}
 	public void setElement(int x, int y, int value) {
 		dynamicMap[y][x] = value;
+	}
+	public int[][] getDynamicMap() {
+		return dynamicMap;
 	}
 	public void goUp() throws OverlapException {
 		if(!checkOverlap("up")) {
@@ -285,10 +294,10 @@ public class myMap {
 					if ((y > 0) && (getElement(x,y - 1) == 1)){
 						adjacentRooms++;
 					}
-					if (adjacentRooms == 3 && random.nextInt(random.nextInt(2,5)) != 0){
+					if (adjacentRooms == 3 && random.nextDouble() < 0.4){
 						setElement(x,y,0);
 					}
-					if (adjacentRooms == 4 && random.nextInt(random.nextInt(5,10)) != 0){
+					if (adjacentRooms == 4 && random.nextDouble() < 0.8){
 						setElement(x,y,0);
 					}
 
