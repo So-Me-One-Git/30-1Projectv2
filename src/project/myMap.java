@@ -1,8 +1,8 @@
 package project;
 import java.util.Random;
 import java.util.ArrayList;
-
 public class myMap {
+	
 	private int xPos = 0;
 	private int yPos = 0;
 	private double fillPercent = 0.35;
@@ -181,20 +181,15 @@ public class myMap {
 	    return false;
 	}
 	public boolean findStartPos() {
-		if(oneExist()) {
-			int ranX = random.nextInt(getMaxX());
-			int ranY = random.nextInt(getMaxY());
-			if(percentFilled() == 1) {
-				return false;
-			}
-			if (getElement(ranX, ranY) == 1) {
-				setStartPos(ranX,ranY);
-				return true;
-			}else {
-				return findStartPos();
-			}
+		while (true) {
+		    int ranX = random.nextInt(getMaxX());
+		    int ranY = random.nextInt(getMaxY());
+
+		    if (getElement(ranX, ranY) == 1) {
+		        setStartPos(ranX, ranY);
+		        return true;
+		    }
 		}
-		return false;
 	}
 
 	public boolean findRandomRoom() {
@@ -225,7 +220,6 @@ public class myMap {
 	public void makeMap(int x, int y) {
 		makeMap(x,y,1);
 	}
-
 	public void makeMap(int x, int y, int size) {
 			dynamicMap(x, y);
 			setStartPos(x/2, y/2);
@@ -238,8 +232,6 @@ public class myMap {
 				dynamicMap = expandWithBorder(dynamicMap);
 				makeBarrier();
 				findStartPos();
-				System.out.println(this.startxPos);
-				System.out.println(this.startyPos);
 			}
 	}
 	public int[][] expandWithBorder(int[][] grid) {
