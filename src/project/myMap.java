@@ -14,9 +14,6 @@ public class myMap {
 	public void setStartPos(int x, int y) {
 		this.startxPos = x;
 		this.startyPos = y;
-		this.xPos = x;
-		this.yPos = y;
-		dynamicMap[startyPos][startxPos] = 1;
 	}
 	public void dynamicMap(int x, int y) {
 		this.dynamicMap = new int[y][x];
@@ -183,6 +180,22 @@ public class myMap {
 	    }
 	    return false;
 	}
+	public boolean findStartPos() {
+		if(oneExist()) {
+			int ranX = random.nextInt(getMaxX());
+			int ranY = random.nextInt(getMaxY());
+			if(percentFilled() == 1) {
+				return false;
+			}
+			if (getElement(ranX, ranY) == 1) {
+				setStartPos(ranX,ranY);
+				return true;
+			}else {
+				return findStartPos();
+			}
+		}
+		return false;
+	}
 
 	public boolean findRandomRoom() {
 		if(oneExist()) {
@@ -224,6 +237,9 @@ public class myMap {
 			}else {
 				dynamicMap = expandWithBorder(dynamicMap);
 				makeBarrier();
+				findStartPos();
+				System.out.println(this.startxPos);
+				System.out.println(this.startyPos);
 			}
 	}
 	public int[][] expandWithBorder(int[][] grid) {
